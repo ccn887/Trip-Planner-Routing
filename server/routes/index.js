@@ -38,30 +38,23 @@ router.post('/itineraries', (req, res, next) => {
 
       let id = itinerary.id
       let attractions = req.body
-      let hotels = attractions.filter(hotel => hotel.category === 'hotels')
-      console.log('hotels:', hotels)
-      // let restaurants = attractions.filter(restaurant => restaurant.category === 'restaurants')
-      // let activities = attractions.filter(activity => activity.category === 'activities')
-      // hotels.forEach(hotel => {
-      //     itinerary.setHotel([hotel])
-      //     console.log('hotel is', hotel)
-      //   })
-      itinerary.setHotels(hotels[0].id)
+      let hotels = attractions.filter(hotel => hotel.category === 'hotels').map(function(hotel){
+        return hotel.id
+      })
+      let restaurants = attractions.filter(restaurant => restaurant.category === 'restaurants').map(function(restaurant){
+        return restaurant.id
+      })
+      let activities = attractions.filter(activity => activity.category === 'activities').map(function(activity){
+        return activity.id
+      })
 
-      .then(()=> {console.log(hotels)})
-      res.status(200).send('hello')
-      // const promiseArr = [Promise.each(hotels, hotel => {
-      //   itinerary.setHotel(hotel)
-      // }),
-      // Promise.each(restaurants, restaurant => {
-      //   itinerary.setRestaurant(restaurant)
-      // }),
-      // Promise.each(activities, activity => {
-      //   itinerary.setActivity(activity)
-      // })]
-      // Promise.all(promiseArr).then(() => {
-      //   res.json(itinerary)
-      // })
+      Promise.all([itinerary.setHotels(hotels),
+      itinerary.setRestaurants(restaurants),
+      itinerary.setActivities(activities)])
+
+      .then(()=> {
+        res.status(200).json(itinerary)
+      })
     })
     .catch(next)
 })

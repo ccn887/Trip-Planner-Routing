@@ -1,6 +1,7 @@
 const mapboxgl = require("mapbox-gl");
 const api = require("./api");
 const buildMarker = require("./marker.js");
+const _ = require('lodash')
 
 /*
  * App State
@@ -10,6 +11,9 @@ const state = {
   attractions: {},
   selectedAttractions: []
 };
+const prevState = {
+  selectedAttractions: []
+}
 
 /*
   * Instantiate the Map
@@ -133,6 +137,7 @@ const buildAttractionAssets = (category, attraction) => {
 
 document.getElementById('save_btn').addEventListener('click', (e) => {
   console.log('selected attr:', state.selectedAttractions)
+  if(state.selectedAttractions)
   fetch(`api/itineraries`, {
     headers: {
       'Content-Type': 'application/json'
@@ -145,7 +150,23 @@ document.getElementById('save_btn').addEventListener('click', (e) => {
       return result.json()
     })
     .then(response => {
+      prevState.selectedAttractions = state.selectedAttractions.slice(0)
+      window.location.hash = '#' +  response.id
       console.log('response from post:', response)
+    })
+    .catch(err => console.error(err))
+})
+
+window.addEventListener('hashchange', (e) => {
+  let hash = window.location.hash.slice(1)
+  fetch(`api/itineraries/${hash}`)
+    .then(result => {
+      return result.json()
+    })
+    .then(itineraryData => {
+      itineraryData.hotels.forEach(hotel => buildAttractionAssets('hotels', hotel))
+      itineraryData.restaurants.forEach(restaurant => buildAttractionAssets('restaurants', restaurant))
+      itineraryData.activities.forEach(activity => buildAttractionAssets('activities', activity))
     })
     .catch(err => console.error(err))
 })

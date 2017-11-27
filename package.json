@@ -20,6 +20,7 @@
     "body-parser": "^1.13.3",
     "bootstrap": "3.3.5",
     "express": "^4.13.3",
+    "lodash": "^4.17.4",
     "mapbox-gl": "^0.40.1",
     "nunjucks": "^2.5.2",
     "pg": "^4.5.5",
