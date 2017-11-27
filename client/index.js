@@ -45,20 +45,23 @@ const makeOption = (attraction, selector) => {
   select.add(option);
 };
 
-if(window.location.hash){
+if (window.location.hash) {
   let hash = window.location.hash.slice(1)
   fetch(`api/itineraries/${hash}`)
-  .then(result => {
-    return result.json()
-  })
-  .then(itinerary =>{
-    console.log(itinerary)
-  })
-  .catch(err => console.error(err))
+    .then(result => {
+      return result.json()
+    })
+    .then(itineraryData => {
+      itineraryData.hotels.forEach(hotel => buildAttractionAssets('hotels', hotel))
+      itineraryData.restaurants.forEach(restaurant => buildAttractionAssets('restaurants', restaurant))
+      itineraryData.activities.forEach(activity => buildAttractionAssets('activities', activity))
+    })
+    .catch(err => console.error(err))
 }
 /*
   * Attach Event Listeners
   */
+
 
 // what to do when the `+` button next to a `select` is clicked
 ["hotels", "restaurants", "activities"].forEach(attractionType => {
@@ -127,3 +130,22 @@ const buildAttractionAssets = (category, attraction) => {
     map.flyTo({ center: fullstackCoords, zoom: 12.3 });
   });
 };
+
+document.getElementById('save_btn').addEventListener('click', (e) => {
+  console.log('selected attr:', state.selectedAttractions)
+  fetch(`api/itineraries`, {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    method: 'post',
+    body: JSON.stringify(
+      state.selectedAttractions)
+  })
+    .then(result => {
+      return result.json()
+    })
+    .then(response => {
+      console.log('response from post:', response)
+    })
+    .catch(err => console.error(err))
+})
