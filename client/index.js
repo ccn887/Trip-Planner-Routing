@@ -15,10 +15,10 @@ const state = {
   * Instantiate the Map
   */
 
-mapboxgl.accessToken = "YOUR API TOKEN HERE";
+mapboxgl.accessToken = "pk.eyJ1IjoiY2NuODg3IiwiYSI6ImNqYWllc2RvZzF4MTQyd29pdGgzMXZxODUifQ.4Xy4nG7wQ3cAUcpBHuIOpQ";
 
-const fullstackCoords = [-74.009, 40.705] // NY
-// const fullstackCoords = [-87.6320523, 41.8881084] // CHI
+// const fullstackCoords = [-74.009, 40.705] // NY
+const fullstackCoords = [-87.6320523, 41.8881084] // CHI
 
 const map = new mapboxgl.Map({
   container: "map",
@@ -45,6 +45,17 @@ const makeOption = (attraction, selector) => {
   select.add(option);
 };
 
+if(window.location.hash){
+  let hash = window.location.hash.slice(1)
+  fetch(`api/itineraries/${hash}`)
+  .then(result => {
+    return result.json()
+  })
+  .then(itinerary =>{
+    console.log(itinerary)
+  })
+  .catch(err => console.error(err))
+}
 /*
   * Attach Event Listeners
   */

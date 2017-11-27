@@ -4,10 +4,11 @@
 var Promise = require('bluebird');
 var {
   db,
-  Place, 
+  Place,
   Hotel,
   Restaurant,
-  Activity
+  Activity,
+  Itinerary
 } = require('./models');
 
 var data = {
